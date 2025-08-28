@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Species Model Reports</title>
+    <style>
+        /* Basic styling for the layout */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+            overflow: hidden; /* Prevents double scrollbars */
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #f4f4f4;
+            border-right: 1px solid #ddd;
+            padding: 15px;
+            overflow-y: auto; /* Makes the list scrollable if it's long */
+        }
+        .sidebar h2 {
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar li a {
+            display: block;
+            padding: 8px 12px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .sidebar li a:hover {
+            background-color: #e2e2e2;
+        }
+        .sidebar li a.active {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+        .content {
+            flex-grow: 1; /* Takes up the remaining space */
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <nav class="sidebar">
+            <h2>Select a Species</h2>
+            <ul id="species-list">
+                </ul>
+        </nav>
+
+        <main class="content">
+            <iframe id="report-viewer" name="report-viewer" title="Species Report Content">
+                <p>Your browser does not support iframes. Please use a modern browser.</p>
+            </iframe>
+        </main>
+    </div>
+
+    <script>
+        // --- 1. EDIT THIS LIST ---
+        // Add your species names and the exact filenames of their HTML reports.
+        const speciesData = [
+            { name: "Abramis brama", file: "Fish/run1/ProtectBaltic_ModelReport_Abramis_brama.html" },
+            { name: "Agonus cataphractus", file: "Fish/run1/ProtectBaltic_ModelReport_Agonus_cataphractus.html" },
+            { name: "Alburnus alburnus", file: "Fish/run1/ProtectBaltic_ModelReport_Alburnus_alburnus.html" },
+            { name: "Alosa fallax", file: "Fish/run1/ProtectBaltic_ModelReport_Alosa_fallax.html" },
+            { name: "Ammodytes tobianus", file: "Fish/run1/ProtectBaltic_ModelReport_Ammodytes_tobianus.html" },
+            { name: "Anguilla anguilla", file: "Fish/run1/ProtectBaltic_ModelReport_Anguilla_anguilla.html" },
+            { name: "Blicca bjoerkna", file: "Fish/run1/ProtectBaltic_ModelReport_Blicca bjoerkna.html" },
+            { name: "Cancer pagurus", file: "Fish/run1/ProtectBaltic_ModelReport_Cancer_pagurus.html" },
+            { name: "Carassius_carassius", file: "Fish/run1/ProtectBaltic_ModelReport_Carassius_carassius.html" },
+            { name: "Carcinus maenas", file: "Fish/run1/ProtectBaltic_ModelReport_Carcinus_maenas.html" }
+            // Add more species here following the same format
+            // { name: "Your Species Name", file: "your_report_file.html" },
+        ];
+        // --- END OF EDIT SECTION ---
+
+
+        // --- 2. JAVASCRIPT LOGIC (No need to edit below this line) ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const speciesListElement = document.getElementById('species-list');
+            const reportViewerElement = document.getElementById('report-viewer');
+            let currentActiveLink = null;
+
+            // Function to generate the list in the sidebar
+            function populateSpeciesList() {
+                speciesData.forEach(species => {
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.textContent = species.name;
+                    link.dataset.file = species.file; // Store filename in a data attribute
+                    listItem.appendChild(link);
+                    speciesListElement.appendChild(listItem);
+                });
+            }
+
+            // Event listener for clicks on the species list
+            speciesListElement.addEventListener('click', function(event) {
+                // Check if a link was clicked
+                if (event.target.tagName === 'A') {
+                    const link = event.target;
+                    const fileName = link.dataset.file;
+
+                    // Update the iframe source to show the selected report
+                    reportViewerElement.src = fileName;
+
+                    // Update active link styling
+                    if (currentActiveLink) {
+                        currentActiveLink.classList.remove('active');
+                    }
+                    link.classList.add('active');
+                    currentActiveLink = link;
+                }
+            });
+
+            // Automatically populate the list and load the first report on page load
+            populateSpeciesList();
+            if (speciesData.length > 0) {
+                const firstLink = speciesListElement.querySelector('a');
+                if (firstLink) {
+                    firstLink.click(); // Simulate a click on the first item
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
